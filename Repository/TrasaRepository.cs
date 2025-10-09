@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Trasa;
+using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -35,21 +36,21 @@ namespace api.Repository
             return trasaModel;
         }
 
-        public async Task<List<Trasa>> GetAllAsync()
+        public async Task<List<Trasa>> GetAllAsync(TrasaQuery query)
         {
-            return await _context.Trasy.ToListAsync();
+            var trasy = _context.Trasy.AsQueryable();
+
+            if (query.KursId != null)
+            {
+                trasy = trasy.Where(t => t.Kursy.Any(k => k.Id == query.KursId));
+            }
+
+            return await trasy.ToListAsync();
         }
 
         public async Task<Trasa?> GetByIdAsync(int id)
         {
             var trasaModel = await _context.Trasy.Include(k => k.Kursy).FirstOrDefaultAsync(t => t.Id == id);
-            return trasaModel;
-        }
-
-        public async Task<Trasa?> GetByKursIdAsync(int kursId)
-        {
-            var kursModel = await _context.Kursy.FirstOrDefaultAsync(k => k.Id == kursId);
-            var trasaModel = await _context.Trasy.FirstOrDefaultAsync(t => t.Id == kursModel.TrasaId);
             return trasaModel;
         }
 

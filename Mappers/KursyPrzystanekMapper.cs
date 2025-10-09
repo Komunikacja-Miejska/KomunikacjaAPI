@@ -14,6 +14,7 @@ namespace api.Mappers
             return new KursyPrzystanekDto
             {
                 KursId = kursyPModel.KursId,
+                PrzystanekId = kursyPModel.PrzystanekId,
                 Godzina = kursyPModel.Godzina
             };
         }

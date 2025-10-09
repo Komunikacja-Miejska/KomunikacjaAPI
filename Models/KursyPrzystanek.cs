@@ -9,7 +9,6 @@ namespace api.Models
     [Table("KursyPrzystanki")]
     public class KursyPrzystanek
     {
-        public int Id { get; set; }
         public int? KursId { get; set; }
         public Kurs? Kurs { get; set; }
         public int? PrzystanekId { get; set; }

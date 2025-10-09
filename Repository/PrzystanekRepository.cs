@@ -56,6 +56,18 @@ namespace api.Repository
             return await _context.Przystanki.Include(k => k.KursyPrzystanki).FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        public async Task<List<KursyPrzystanek>> GetDeparturesByIdAsync(int id, DateTime? godzina = null)
+        {
+            var kursyPrzystanki = _context.KursyPrzystanki.Where(kp => kp.PrzystanekId == id).AsQueryable();
+
+            if (godzina != null)
+            {
+                kursyPrzystanki = kursyPrzystanki.Where(kp => kp.Godzina > godzina);
+            }
+
+            return await kursyPrzystanki.ToListAsync();
+        }
+
         public Task<bool> PrzystanekExists(int id)
         {
             return _context.Przystanki.AnyAsync(p => p.Id == id);

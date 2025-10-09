@@ -19,17 +19,15 @@ namespace api.Controllers
     public class TrasaController : ControllerBase
     {
         private readonly ITrasaRepository _trasaRepo;
-        private readonly IKursRepository _kursyRepo;
         public TrasaController(ITrasaRepository trasaRepo, IKursRepository kursRepo)
         {
             _trasaRepo = trasaRepo;
-            _kursyRepo = kursRepo;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] TrasaQuery query)
         {
-            var trasy = await _trasaRepo.GetAllAsync();
+            var trasy = await _trasaRepo.GetAllAsync(query);
             var trasyDto = trasy.Select(t => t.ToTrasaDto());
 
             return Ok(trasy);
@@ -43,19 +41,6 @@ namespace api.Controllers
                 return BadRequest(ModelState);
 
             var trasaModel = await _trasaRepo.GetByIdAsync(id);
-
-            if (trasaModel == null) return NotFound();
-
-            return Ok(trasaModel.ToTrasaDto());
-        }
-
-        [HttpGet("/byKurs/{kursId:int}")]
-        public async Task<IActionResult> GetByKursId([FromRoute] int kursId)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var trasaModel = await _trasaRepo.GetByKursIdAsync(kursId);
 
             if (trasaModel == null) return NotFound();
 

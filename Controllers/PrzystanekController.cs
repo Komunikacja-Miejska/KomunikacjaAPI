@@ -48,20 +48,15 @@ namespace api.Controllers
             return Ok(przystanek.ToPrzystanekDto());
         }
 
-        [HttpGet("odjazdy/{id:int}")]
-        public async Task<IActionResult> GetDeparturesById([FromRoute] int id)
+        [HttpGet("departures/{id:int}")]
+        public async Task<IActionResult> GetDeparturesById([FromRoute] int id, [FromQuery] DateTime? godzina)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var przystanekModel = await _przystanekRepo.GetByIdAsync(id);
+            var kursyPrzystanki = await _przystanekRepo.GetDeparturesByIdAsync(id, godzina);
 
-            if (przystanekModel == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(przystanekModel.KursyPrzystanki.Select(kp => kp.ToKursyPrzystanekDto()));
+            return Ok(kursyPrzystanki.Select(kp => kp.ToKursyPrzystanekDto()));
         }
 
         [HttpPut]

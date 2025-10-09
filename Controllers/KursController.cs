@@ -42,7 +42,7 @@ namespace api.Controllers
             return Ok(kursModel.ToKursDto());
         }
         [HttpGet("departures/{id:int}")]
-        public async Task<IActionResult> GetDeparturesById([FromRoute] int id, [FromQuery] DateTime godzina)
+        public async Task<IActionResult> GetDeparturesById([FromRoute] int id, [FromQuery] DateTime? godzina)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -51,7 +51,7 @@ namespace api.Controllers
 
             if (kursyPrzystanki == null) return NotFound();
 
-            return Ok(kursyPrzystanki);
+            return Ok(kursyPrzystanki.Select(kp => kp.ToKursyPrzystanekDto()));
         }
 
         [HttpPost("{trasaId:int}")]

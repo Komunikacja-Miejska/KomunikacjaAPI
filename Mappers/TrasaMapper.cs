@@ -15,6 +15,7 @@ namespace api.Mappers
             {
                 NazwaLinii = trasaModel.NazwaLinii,
                 Opis = trasaModel.Opis,
+                Kursy = trasaModel.Kursy.Select(k => k.ToKursDto()).ToList()
             };
         }
 

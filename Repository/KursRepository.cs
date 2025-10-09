@@ -55,6 +55,9 @@ namespace api.Repository
 
             if (kursModel == null) return null;
 
+            var kursyPrzystanki = _context.KursyPrzystanki.Where(kp => kp.KursId == id);
+
+            _context.KursyPrzystanki.RemoveRange(kursyPrzystanki);
             _context.Kursy.Remove(kursModel);
             await _context.SaveChangesAsync();
             return kursModel;
@@ -81,9 +84,14 @@ namespace api.Repository
             return await _context.Kursy.Include(k => k.KursyPrzystanki).FirstOrDefaultAsync(k => k.Id == id);
         }
 
-        public async Task<List<KursyPrzystanek>?> GetDeparturesByIdAsync(int kursId, DateTime godzina)
+        public async Task<List<KursyPrzystanek>?> GetDeparturesByIdAsync(int kursId, DateTime? godzina = null)
         {
-            var kursyPrzystanki = _context.KursyPrzystanki.Where(kp => kp.KursId == kursId &&  kp.Godzina > godzina).OrderBy(kp => kp.Godzina);
+            var kursyPrzystanki = _context.KursyPrzystanki.Where(kp => kp.KursId == kursId).AsQueryable();
+
+            if (godzina != null)
+            {
+                kursyPrzystanki = kursyPrzystanki.Where(kp => kp.Godzina > godzina).OrderBy(kp => kp.Godzina);
+            }
 
             return await kursyPrzystanki.ToListAsync();
         }
