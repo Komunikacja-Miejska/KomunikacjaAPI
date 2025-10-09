@@ -13,18 +13,8 @@ namespace api.Mappers
         {
             return new KursyPrzystanekDto
             {
-                Id = kursyPModel.Id,
+                KursId = kursyPModel.KursId,
                 Godzina = kursyPModel.Godzina
-            };
-        }
-
-        public static KursyPrzystanek ToKursyPrzystanekFromCreateDto(this CreateKursyPrzystanekDto kursyPrzystanekDto)
-        {
-            return new KursyPrzystanek
-            {
-                KursId = kursyPrzystanekDto.KursId,
-                PrzystanekId = kursyPrzystanekDto.PrzystanekId,
-                Godzina = kursyPrzystanekDto.Godzina
             };
         }
     }

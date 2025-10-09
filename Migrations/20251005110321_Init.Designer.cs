@@ -12,7 +12,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20251002154238_Init")]
+    [Migration("20251005110321_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -45,24 +45,19 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.KursyPrzystanek", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Godzina")
-                        .HasColumnType("datetime2");
-
                     b.Property<int?>("KursId")
                         .HasColumnType("int");
 
                     b.Property<int?>("PrzystanekId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime>("Godzina")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("KursId");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("KursId", "PrzystanekId");
 
                     b.HasIndex("PrzystanekId");
 
@@ -123,12 +118,16 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.KursyPrzystanek", b =>
                 {
                     b.HasOne("api.Models.Kurs", "Kurs")
-                        .WithMany("Przystanki")
-                        .HasForeignKey("KursId");
+                        .WithMany("KursyPrzystanki")
+                        .HasForeignKey("KursId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("api.Models.Przystanek", "Przystanek")
                         .WithMany("KursyPrzystanki")
-                        .HasForeignKey("PrzystanekId");
+                        .HasForeignKey("PrzystanekId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Kurs");
 
@@ -137,7 +136,7 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Kurs", b =>
                 {
-                    b.Navigation("Przystanki");
+                    b.Navigation("KursyPrzystanki");
                 });
 
             modelBuilder.Entity("api.Models.Przystanek", b =>

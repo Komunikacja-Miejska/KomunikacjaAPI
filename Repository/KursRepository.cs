@@ -17,6 +17,31 @@ namespace api.Repository
         {
             _context = context;
         }
+
+        public async Task<Kurs?> AddPrzystanekAsync(int id, int przystanekId, DateTime godzina)
+        {
+            var kursModel = await _context.Kursy.FirstOrDefaultAsync(k => k.Id == id);
+            var przystanekModel = await _context.Przystanki.FirstOrDefaultAsync(p => p.Id == id);
+            if (kursModel == null || przystanekModel == null)
+                return null;
+
+            bool exists = await _context.KursyPrzystanki.AnyAsync(kp => kp.KursId == id && kp.PrzystanekId == przystanekId && godzina == kp.Godzina);
+
+            if (exists) return null;
+
+            var kursyPrzystanekModel = new KursyPrzystanek
+            {
+                KursId = id,
+                PrzystanekId = przystanekId,
+                Godzina = godzina
+            };
+
+            await _context.KursyPrzystanki.AddAsync(kursyPrzystanekModel);
+            await _context.SaveChangesAsync();
+
+            return kursModel;
+        }
+
         public async Task<Kurs> CreateAsync(Kurs kursModel)
         {
             await _context.Kursy.AddAsync(kursModel);
@@ -53,7 +78,14 @@ namespace api.Repository
 
         public async Task<Kurs?> GetByIdAsync(int id)
         {
-            return await _context.Kursy.FirstOrDefaultAsync(k => k.Id == id);
+            return await _context.Kursy.Include(k => k.KursyPrzystanki).FirstOrDefaultAsync(k => k.Id == id);
+        }
+
+        public async Task<List<KursyPrzystanek>?> GetDeparturesByIdAsync(int kursId, DateTime godzina)
+        {
+            var kursyPrzystanki = _context.KursyPrzystanki.Where(kp => kp.KursId == kursId &&  kp.Godzina > godzina).OrderBy(kp => kp.Godzina);
+
+            return await kursyPrzystanki.ToListAsync();
         }
     }
 }

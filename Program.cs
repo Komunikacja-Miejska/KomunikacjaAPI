@@ -33,7 +33,6 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 builder.Services.AddScoped<IPrzystanekRepository, PrzystanekRepository>();
 builder.Services.AddScoped<ITrasaRepository, TrasaRepository>();
 builder.Services.AddScoped<IKursRepository, KursRepository>();
-builder.Services.AddScoped<IKursyPrzystanekRepository, KursyPrzystanekRepository>();
 
 var app = builder.Build();
 

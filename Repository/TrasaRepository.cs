@@ -43,9 +43,13 @@ namespace api.Repository
         public async Task<Trasa?> GetByIdAsync(int id)
         {
             var trasaModel = await _context.Trasy.Include(k => k.Kursy).FirstOrDefaultAsync(t => t.Id == id);
+            return trasaModel;
+        }
 
-            if (trasaModel == null) return null;
-
+        public async Task<Trasa?> GetByKursIdAsync(int kursId)
+        {
+            var kursModel = await _context.Kursy.FirstOrDefaultAsync(k => k.Id == kursId);
+            var trasaModel = await _context.Trasy.FirstOrDefaultAsync(t => t.Id == kursModel.TrasaId);
             return trasaModel;
         }
 

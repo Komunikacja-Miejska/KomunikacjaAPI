@@ -61,36 +61,32 @@ namespace api.Migrations
                 name: "KursyPrzystanki",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    KursId = table.Column<int>(type: "int", nullable: true),
-                    PrzystanekId = table.Column<int>(type: "int", nullable: true),
+                    KursId = table.Column<int>(type: "int", nullable: false),
+                    PrzystanekId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Godzina = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_KursyPrzystanki", x => x.Id);
+                    table.PrimaryKey("PK_KursyPrzystanki", x => new { x.KursId, x.PrzystanekId });
                     table.ForeignKey(
                         name: "FK_KursyPrzystanki_Kursy_KursId",
                         column: x => x.KursId,
                         principalTable: "Kursy",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_KursyPrzystanki_Przystanki_PrzystanekId",
                         column: x => x.PrzystanekId,
                         principalTable: "Przystanki",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Kursy_TrasaId",
                 table: "Kursy",
                 column: "TrasaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_KursyPrzystanki_KursId",
-                table: "KursyPrzystanki",
-                column: "KursId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_KursyPrzystanki_PrzystanekId",

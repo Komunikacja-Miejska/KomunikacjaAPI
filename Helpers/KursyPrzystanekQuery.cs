@@ -8,6 +8,7 @@ namespace api.Helpers
     public class KursyPrzystanekQuery
     {
         public int? KursId { get; set; } = null;
-        public int? PrzystanekId { get; set; } = null;
+        public string Nazwa { get; set; } = string.Empty;
+        public string Opis { get; set; } = string.Empty;
     }
 }

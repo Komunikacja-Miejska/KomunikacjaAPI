@@ -19,12 +19,10 @@ namespace api.Controllers
     public class PrzystanekController : ControllerBase
     {
         private readonly IPrzystanekRepository _przystanekRepo;
-        private readonly IKursyPrzystanekRepository _kursyPrzystanekRepo;
 
-        public PrzystanekController(IPrzystanekRepository przystanekRepository, IKursyPrzystanekRepository kursyPrzystanekRepo)
+        public PrzystanekController(IPrzystanekRepository przystanekRepository)
         {
             _przystanekRepo = przystanekRepository;
-            _kursyPrzystanekRepo = kursyPrzystanekRepo;
         }
 
         [HttpGet]
@@ -63,7 +61,7 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            return Ok(przystanekModel.KursyPrzystanki);
+            return Ok(przystanekModel.KursyPrzystanki.Select(kp => kp.ToKursyPrzystanekDto()));
         }
 
         [HttpPut]
@@ -97,8 +95,6 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            await _kursyPrzystanekRepo.DeleteByFkAsync(new DeleteKursyPrzystanekQuery { PrzystanekId = id });
 
             var przystanekModel = await _przystanekRepo.DeleteAsync(id);
 

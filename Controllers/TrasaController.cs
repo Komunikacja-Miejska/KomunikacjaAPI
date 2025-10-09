@@ -19,12 +19,10 @@ namespace api.Controllers
     public class TrasaController : ControllerBase
     {
         private readonly ITrasaRepository _trasaRepo;
-        private readonly IKursyPrzystanekRepository _kursyPrzystanekRepo;
         private readonly IKursRepository _kursyRepo;
-        public TrasaController(ITrasaRepository trasaRepo, IKursyPrzystanekRepository kursyPrzystanekRepo, IKursRepository kursRepo)
+        public TrasaController(ITrasaRepository trasaRepo, IKursRepository kursRepo)
         {
             _trasaRepo = trasaRepo;
-            _kursyPrzystanekRepo = kursyPrzystanekRepo;
             _kursyRepo = kursRepo;
         }
 
@@ -45,6 +43,19 @@ namespace api.Controllers
                 return BadRequest(ModelState);
 
             var trasaModel = await _trasaRepo.GetByIdAsync(id);
+
+            if (trasaModel == null) return NotFound();
+
+            return Ok(trasaModel.ToTrasaDto());
+        }
+
+        [HttpGet("/byKurs/{kursId:int}")]
+        public async Task<IActionResult> GetByKursId([FromRoute] int kursId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var trasaModel = await _trasaRepo.GetByKursIdAsync(kursId);
 
             if (trasaModel == null) return NotFound();
 

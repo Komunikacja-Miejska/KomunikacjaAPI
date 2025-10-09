@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Interfaces;
+using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +26,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var kursy = await _kursRepo.GetAllAsync();
-            return Ok(kursy);
+            return Ok(kursy.Select(k => k.ToKursDto()));
         }
 
         [HttpGet("{id:int}")]
@@ -38,7 +39,19 @@ namespace api.Controllers
 
             if (kursModel == null) return NotFound();
 
-            return Ok(kursModel);
+            return Ok(kursModel.ToKursDto());
+        }
+        [HttpGet("departures/{id:int}")]
+        public async Task<IActionResult> GetDeparturesById([FromRoute] int id, [FromQuery] DateTime godzina)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var kursyPrzystanki = await _kursRepo.GetDeparturesByIdAsync(id, godzina);
+
+            if (kursyPrzystanki == null) return NotFound();
+
+            return Ok(kursyPrzystanki);
         }
 
         [HttpPost("{trasaId:int}")]
@@ -58,6 +71,19 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = kursModel.Id }, kursModel);
         }
 
+        [HttpPost("{id:int}/add-przystanek/{przystanekId:int}")]
+        public async Task<IActionResult> AddPrzystanek([FromRoute] int id, [FromRoute] int przystanekId, DateTime godzina)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var kursModel = await _kursRepo.AddPrzystanekAsync(id, przystanekId, godzina);
+
+            if (kursModel == null) return NotFound("Cannot Find kurs or Przystanek");
+
+            return Ok(kursModel);
+        }
+
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
@@ -71,5 +97,7 @@ namespace api.Controllers
 
             return NoContent();
         }
+
+        
     }
 }

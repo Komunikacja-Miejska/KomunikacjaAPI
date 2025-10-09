@@ -41,7 +41,7 @@ namespace api.Repository
 
         public async Task<List<Przystanek>> GetAllAsync(PrzystanekQuery query)
         {
-            var przystanki = _context.Przystanki.Include(k => k.KursyPrzystanki).AsQueryable();
+            var przystanki = _context.Przystanki.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.Nazwa))
             {
