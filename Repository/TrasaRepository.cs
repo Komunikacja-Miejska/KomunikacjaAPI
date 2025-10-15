@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Quic;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Trasa;
@@ -31,6 +32,9 @@ namespace api.Repository
 
             if (trasaModel == null) return null;
 
+            var kursy = _context.Kursy.Where(k => k.TrasaId == id);
+
+            _context.RemoveRange(kursy);
             _context.Remove(trasaModel);
             await _context.SaveChangesAsync();
             return trasaModel;
@@ -39,10 +43,19 @@ namespace api.Repository
         public async Task<List<Trasa>> GetAllAsync(TrasaQuery query)
         {
             var trasy = _context.Trasy.AsQueryable();
-
             if (query.KursId != null)
             {
                 trasy = trasy.Where(t => t.Kursy.Any(k => k.Id == query.KursId));
+            }
+
+            if (query.NazwaLinii != null)
+            {
+                trasy = trasy.Where(t => t.NazwaLinii.Equals(query.NazwaLinii));
+            }
+
+            if (query.Opis != null)
+            {
+                trasy = trasy.Where(t => t.Opis.Equals(query.Opis));
             }
 
             return await trasy.ToListAsync();
@@ -52,6 +65,12 @@ namespace api.Repository
         {
             var trasaModel = await _context.Trasy.Include(k => k.Kursy).FirstOrDefaultAsync(t => t.Id == id);
             return trasaModel;
+        }
+
+        public async Task<List<Kurs>> GetKursyById(int id)
+        {
+            var kursy = _context.Kursy.Where(k => k.TrasaId == id);
+            return await kursy.ToListAsync();
         }
 
         public Task<bool> TrasaExists(int id)

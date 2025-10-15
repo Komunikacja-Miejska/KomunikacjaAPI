@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20251009083025_deleteKpId")]
-    partial class deleteKpId
+    [Migration("20251011172239_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,8 +51,16 @@ namespace api.Migrations
                     b.Property<int?>("PrzystanekId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Godzina")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("Godzina")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Longitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("KursId", "PrzystanekId");
 

@@ -6,6 +6,7 @@ using api.Interfaces;
 using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace api.Controllers
 {
@@ -42,7 +43,7 @@ namespace api.Controllers
             return Ok(kursModel.ToKursDto());
         }
         [HttpGet("departures/{id:int}")]
-        public async Task<IActionResult> GetDeparturesById([FromRoute] int id, [FromQuery] DateTime? godzina)
+        public async Task<IActionResult> GetDeparturesById([FromRoute] int id, [FromQuery] TimeSpan? godzina)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -71,8 +72,21 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = kursModel.Id }, kursModel);
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdatePrzystanek([FromRoute] int id, [FromQuery] int trasaId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var kursModel = await _kursRepo.UpdateAsync(id, trasaId);
+
+            if (kursModel == null) return NotFound();
+
+            return Ok(kursModel.ToKursDto());
+        }
+
         [HttpPost("{id:int}/add-przystanek/{przystanekId:int}")]
-        public async Task<IActionResult> AddPrzystanek([FromRoute] int id, [FromRoute] int przystanekId, DateTime godzina)
+        public async Task<IActionResult> AddPrzystanek([FromRoute] int id, [FromRoute] int przystanekId, TimeSpan godzina)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -82,6 +96,17 @@ namespace api.Controllers
             if (kursModel == null) return NotFound("Cannot Find kurs or Przystanek");
 
             return Ok(kursModel);
+        }
+
+        [HttpDelete("{id:int}/delete-przystanek/{przystanekId:int}")]
+        public async Task<IActionResult> DeletePrzystanek([FromRoute] int id, [FromRoute] int przystanekId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var kursyPrzystanek = await _kursRepo.DeletePrzystanekAsync(id, przystanekId);
+            if (kursyPrzystanek == null) return NotFound("Cannot Find KursyPrzystanek");
+            return Ok(kursyPrzystanek);
         }
 
         [HttpDelete]

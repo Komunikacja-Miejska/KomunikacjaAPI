@@ -18,10 +18,10 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<Kurs?> AddPrzystanekAsync(int id, int przystanekId, DateTime godzina)
+        public async Task<Kurs?> AddPrzystanekAsync(int id, int przystanekId, TimeSpan godzina)
         {
             var kursModel = await _context.Kursy.FirstOrDefaultAsync(k => k.Id == id);
-            var przystanekModel = await _context.Przystanki.FirstOrDefaultAsync(p => p.Id == id);
+            var przystanekModel = await _context.Przystanki.FirstOrDefaultAsync(p => p.Id == przystanekId);
             if (kursModel == null || przystanekModel == null)
                 return null;
 
@@ -73,6 +73,15 @@ namespace api.Repository
             await _context.SaveChangesAsync();
             return new List<Kurs>();
         }
+        public async Task<KursyPrzystanek?> DeletePrzystanekAsync(int id, int przystanekId)
+        {
+            var kursyPrzystanekModel = await _context.KursyPrzystanki.FirstOrDefaultAsync(kp => kp.KursId == id && kp.PrzystanekId == przystanekId);
+
+            if (kursyPrzystanekModel == null) return null;
+            _context.KursyPrzystanki.Remove(kursyPrzystanekModel);
+            await _context.SaveChangesAsync();
+            return kursyPrzystanekModel;
+        }
 
         public async Task<List<Kurs>> GetAllAsync()
         {
@@ -84,16 +93,27 @@ namespace api.Repository
             return await _context.Kursy.Include(k => k.KursyPrzystanki).FirstOrDefaultAsync(k => k.Id == id);
         }
 
-        public async Task<List<KursyPrzystanek>?> GetDeparturesByIdAsync(int kursId, DateTime? godzina = null)
+        public async Task<List<KursyPrzystanek>?> GetDeparturesByIdAsync(int kursId, TimeSpan? godzina = null)
         {
-            var kursyPrzystanki = _context.KursyPrzystanki.Where(kp => kp.KursId == kursId).AsQueryable();
+            var kursyPrzystanki = _context.KursyPrzystanki.Where(kp => kp.KursId == kursId).OrderBy(kp => kp.Godzina).AsQueryable();
 
             if (godzina != null)
             {
-                kursyPrzystanki = kursyPrzystanki.Where(kp => kp.Godzina > godzina).OrderBy(kp => kp.Godzina);
+                kursyPrzystanki = kursyPrzystanki.Where(kp => kp.Godzina > godzina);
             }
 
             return await kursyPrzystanki.ToListAsync();
+        }
+
+        public async Task<Kurs?> UpdateAsync(int id, int trasaId)
+        {
+            var existingKurs = await _context.Kursy.FirstOrDefaultAsync(k => k.Id == id);
+            if (existingKurs == null) return null;
+
+            existingKurs.TrasaId = trasaId;
+
+            await _context.SaveChangesAsync();
+            return existingKurs;
         }
     }
 }

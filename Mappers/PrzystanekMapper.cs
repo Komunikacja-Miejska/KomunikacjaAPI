@@ -16,6 +16,8 @@ namespace api.Mappers
                 Id = przystanekModel.Id,
                 Nazwa = przystanekModel.Nazwa,
                 Opis = przystanekModel.Opis,
+                Latitude = przystanekModel.Latitude,
+                Longitude = przystanekModel.Longitude,
                 KursyPrzystanki = przystanekModel.KursyPrzystanki.Select(k => k.ToKursyPrzystanekDto()).ToList()
             };
         }
@@ -25,7 +27,9 @@ namespace api.Mappers
             return new Przystanek
             {
                 Nazwa = przystanekDto.Nazwa,
-                Opis = przystanekDto.Opis
+                Opis = przystanekDto.Opis,
+                Latitude = przystanekDto.Latitude,
+                Longitude = przystanekDto.Longitude,
             };
         }
     }

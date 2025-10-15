@@ -48,8 +48,8 @@ namespace api.Migrations
                     b.Property<int?>("PrzystanekId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Godzina")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("Godzina")
+                        .HasColumnType("time");
 
                     b.HasKey("KursId", "PrzystanekId");
 
@@ -65,6 +65,14 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Longitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nazwa")
                         .IsRequired()

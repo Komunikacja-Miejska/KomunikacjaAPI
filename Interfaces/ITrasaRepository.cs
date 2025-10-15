@@ -12,6 +12,7 @@ namespace api.Interfaces
     {
         Task<List<Trasa>> GetAllAsync(TrasaQuery query);
         Task<Trasa?> GetByIdAsync(int id);
+        Task<List<Kurs>> GetKursyById(int id);
         Task<Trasa?> UpdateAsync(int id, UpdateTrasaDto updateDto);
         Task<Trasa> CreateAsync(Trasa trasaModel);
         Task<Trasa?> DeleteAsync(int id);

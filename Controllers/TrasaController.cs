@@ -47,6 +47,18 @@ namespace api.Controllers
             return Ok(trasaModel.ToTrasaDto());
         }
 
+        [HttpGet]
+        [Route("courses/{id:int}")]
+        public async Task<IActionResult> GetCoursesById([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var kursy = await _trasaRepo.GetKursyById(id);
+
+            return Ok(kursy.Select(k => k.ToKursDto()));
+        }
+
         [HttpPut]
         [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateTrasaDto updateDto)

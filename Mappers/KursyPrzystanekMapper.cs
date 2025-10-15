@@ -15,7 +15,7 @@ namespace api.Mappers
             {
                 KursId = kursyPModel.KursId,
                 PrzystanekId = kursyPModel.PrzystanekId,
-                Godzina = kursyPModel.Godzina
+                Godzina = kursyPModel.Godzina,
             };
         }
     }

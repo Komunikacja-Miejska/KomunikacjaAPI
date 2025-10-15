@@ -49,7 +49,7 @@ namespace api.Controllers
         }
 
         [HttpGet("departures/{id:int}")]
-        public async Task<IActionResult> GetDeparturesById([FromRoute] int id, [FromQuery] DateTime? godzina)
+        public async Task<IActionResult> GetDeparturesById([FromRoute] int id, [FromQuery] TimeSpan? godzina)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

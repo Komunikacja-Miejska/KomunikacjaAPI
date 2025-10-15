@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20251005110321_Init")]
-    partial class Init
+    [Migration("20251011172727_Coordinates")]
+    partial class Coordinates
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,11 +51,8 @@ namespace api.Migrations
                     b.Property<int?>("PrzystanekId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Godzina")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<TimeSpan>("Godzina")
+                        .HasColumnType("time");
 
                     b.HasKey("KursId", "PrzystanekId");
 
@@ -71,6 +68,14 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Longitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nazwa")
                         .IsRequired()

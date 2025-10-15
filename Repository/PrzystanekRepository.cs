@@ -56,7 +56,7 @@ namespace api.Repository
             return await _context.Przystanki.Include(k => k.KursyPrzystanki).FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<List<KursyPrzystanek>> GetDeparturesByIdAsync(int id, DateTime? godzina = null)
+        public async Task<List<KursyPrzystanek>> GetDeparturesByIdAsync(int id, TimeSpan? godzina = null)
         {
             var kursyPrzystanki = _context.KursyPrzystanki.Where(kp => kp.PrzystanekId == id).AsQueryable();
 
@@ -81,6 +81,8 @@ namespace api.Repository
 
             existingPrzystanek.Nazwa = updateDto.Nazwa;
             existingPrzystanek.Opis = updateDto.Opis;
+            existingPrzystanek.Latitude = updateDto.Latitude;
+            existingPrzystanek.Longitude = updateDto.Longitude;
 
             await _context.SaveChangesAsync();
             return existingPrzystanek;

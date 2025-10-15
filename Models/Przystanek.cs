@@ -12,6 +12,8 @@ namespace api.Models
         public int Id { get; set; }
         public string Nazwa { get; set; } = string.Empty;
         public string Opis { get; set; } = string.Empty;
+        public string Latitude { get; set; } = string.Empty;
+        public string Longitude { get; set; } = string.Empty;
         public List<KursyPrzystanek> KursyPrzystanki { get; set; } = new List<KursyPrzystanek>();
     }
 }

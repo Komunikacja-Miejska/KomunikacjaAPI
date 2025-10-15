@@ -12,7 +12,7 @@ namespace api.Interfaces
     {
         Task<List<Przystanek>> GetAllAsync(PrzystanekQuery query);
         Task<Przystanek?> GetByIdAsync(int id);
-        Task<List<KursyPrzystanek>> GetDeparturesByIdAsync(int id, DateTime? godzina);
+        Task<List<KursyPrzystanek>> GetDeparturesByIdAsync(int id, TimeSpan? godzina);
         Task<Przystanek> CreateAsync(Przystanek przystanekModel);
         Task<Przystanek?> UpdateAsync(int id, UpdatePrzystanekDto updateDto);
         Task<Przystanek?> DeleteAsync(int id);

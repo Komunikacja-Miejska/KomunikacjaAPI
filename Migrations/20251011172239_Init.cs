@@ -63,8 +63,9 @@ namespace api.Migrations
                 {
                     KursId = table.Column<int>(type: "int", nullable: false),
                     PrzystanekId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Godzina = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Godzina = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Latitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Longitude = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

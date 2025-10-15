@@ -13,6 +13,6 @@ namespace api.Models
         public Kurs? Kurs { get; set; }
         public int? PrzystanekId { get; set; }
         public Przystanek? Przystanek { get; set; }
-        public DateTime Godzina { get; set; }
+        public TimeSpan Godzina { get; set; }
     }
 }
